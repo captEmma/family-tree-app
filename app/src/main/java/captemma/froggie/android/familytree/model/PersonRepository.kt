@@ -6,9 +6,12 @@ class PersonRepository {
     private val people = mutableListOf<Person>()
     private var nextID = 1
 
-    fun addPerson(firstName: String, lastName: String,
-                  parents: MutableList<Int> = mutableListOf(),
-                  heir: Boolean=false): Person{
+    fun addPerson(
+        firstName: String, lastName: String,
+        gender: Gender = Gender.OTHER,
+        parents: MutableList<Int> = mutableListOf(),
+        heir: Boolean = false
+    ): Person{
         if (parents.size > 2) {
             throw IllegalArgumentException("A person can have maximum 2 biological parents")
         }
@@ -17,6 +20,7 @@ class PersonRepository {
             id=nextID,
             firstName=firstName,
             lastName=lastName,
+            gender=gender,
             parentIds=parents,
             isHeir=heir
         )

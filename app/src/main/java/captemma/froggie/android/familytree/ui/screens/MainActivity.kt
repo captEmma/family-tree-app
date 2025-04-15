@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import captemma.froggie.android.familytree.model.Gender
 import captemma.froggie.android.familytree.model.PersonRepository
 import captemma.froggie.android.familytree.ui.theme.FamilyTreeTheme
 
@@ -23,14 +24,30 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val dawn = repository.addPerson("Dawn", "Rutherford", heir = true)
+        val dawn = repository.addPerson("Dawn", "Rutherford", Gender.FEMALE, heir = true)
         val frost = repository.addPerson("Frost", "Thomas")
-        val river = repository.addPerson("River", "Rutherford", mutableListOf(dawn.id, frost.id), true)
-        val kyle = repository.addPerson("Kyle", "Kyleson")
-        val katie = repository.addPerson("Katie", "Rutherford", mutableListOf(dawn.id))
-        val blake = repository.addPerson("Blake", "Rutherford", mutableListOf(dawn.id, kyle.id))
-        val kai = repository.addPerson("Kai", "Rutherford")
-        val coral = repository.addPerson("Coral", "Rutherford", heir = true)
+        val river = repository.addPerson(
+            "River",
+            "Rutherford",
+            Gender.MALE,
+            mutableListOf(dawn.id, frost.id),
+            true
+        )
+        val kyle = repository.addPerson("Kyle", "Kyleson", Gender.MALE)
+        val katie = repository.addPerson(
+            "Katie",
+            "Rutherford",
+            Gender.FEMALE,
+            mutableListOf(dawn.id)
+        )
+        val blake = repository.addPerson(
+            "Blake",
+            "Rutherford",
+            Gender.OTHER,
+            mutableListOf(dawn.id, kyle.id)
+        )
+        val kai = repository.addPerson("Kai", "Rutherford", Gender.MALE)
+        val coral = repository.addPerson("Coral", "Rutherford", Gender.FEMALE, heir = true)
 
         repository.addParentToPerson(katie.id, dawn.id)
         repository.addParentToPerson(katie.id, kyle.id)
