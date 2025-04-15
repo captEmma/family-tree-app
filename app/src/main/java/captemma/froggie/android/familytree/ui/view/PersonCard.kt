@@ -40,7 +40,7 @@ fun PersonCard(person: Person) {
                 text = person.getFullName(),
                 maxLines = 1
             )
-            Spacer(Modifier.size(12.dp))
+            Spacer(Modifier.size(2.dp))
             Text(
                 text = if (person.isHeir) stringResource(R.string.heir) else "",
                 maxLines = 1

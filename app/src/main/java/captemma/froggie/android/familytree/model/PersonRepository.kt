@@ -1,9 +1,10 @@
 package captemma.froggie.android.familytree.model
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 
 class PersonRepository {
-    private val people = mutableListOf<Person>()
+    private val people = mutableStateListOf<Person>()
     private var nextID = 1
 
     fun addPerson(
@@ -78,5 +79,9 @@ class PersonRepository {
         return people.find { person ->
             firstName == person.firstName && lastName == person.lastName
         }?.id
+    }
+
+    fun getPeople(): List<Person> {
+        return people
     }
 }
