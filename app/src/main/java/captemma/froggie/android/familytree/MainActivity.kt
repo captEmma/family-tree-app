@@ -14,12 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import captemma.froggie.android.familytree.model.Gender
 import captemma.froggie.android.familytree.model.PersonRepository
+import captemma.froggie.android.familytree.navigation.NavGraph
 import captemma.froggie.android.familytree.ui.screen.ListScreen
 import captemma.froggie.android.familytree.ui.theme.FamilyTreeTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val repository = PersonRepository()
+    private val personRepository = PersonRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,16 +65,16 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FamilyTreeTheme {
-                ListScreen()
+                NavGraph(personRepository = personRepository)
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FamilyTreeTheme {
-        ListScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun MainPreview() {
+//    FamilyTreeTheme {
+//        NavGraph()
+//    }
+//}

@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,12 +14,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import captemma.froggie.android.familytree.model.Gender
 import captemma.froggie.android.familytree.model.PersonRepository
+import captemma.froggie.android.familytree.navigation.Screen
 import captemma.froggie.android.familytree.ui.view.PersonCard
 
 @Composable
-fun ListScreen() {
+fun ListScreen(navController: NavController? = null) {
     val context = LocalContext.current
     val repository = remember { PersonRepository() }
 
@@ -60,6 +64,16 @@ fun ListScreen() {
 
     Scaffold(
         modifier = Modifier.safeDrawingPadding(),
+
+        floatingActionButton = {
+            LargeFloatingActionButton(
+                shape = CircleShape,
+                onClick = {
+                    navController?.navigate(Screen.AddPerson.route)
+                }
+            ) { }
+        },
+
         content = { innerPadding ->
             Box(Modifier.fillMaxSize().padding(innerPadding)){
                 if(people.isNotEmpty()){
