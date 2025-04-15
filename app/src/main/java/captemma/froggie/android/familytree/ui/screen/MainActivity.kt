@@ -1,4 +1,4 @@
-package captemma.froggie.android.familytree.ui.screens
+package captemma.froggie.android.familytree.ui.screen
 
 import android.os.Bundle
 import android.util.Log
