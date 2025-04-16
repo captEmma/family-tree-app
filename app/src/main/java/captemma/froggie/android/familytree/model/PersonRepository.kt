@@ -2,10 +2,16 @@ package captemma.froggie.android.familytree.model
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import captemma.froggie.android.familytree.sqlite.PersistentDataHelper
 
-class PersonRepository {
+class PersonRepository(private val dataHelper: PersistentDataHelper) {
     private val people = mutableStateListOf<Person>()
-    private var nextID = 1
+
+    init {
+        dataHelper.open()
+        val dbPeople = dataHelper.loadPeople()
+        people.addAll(dbPeople)
+    }
 
     fun addPerson(
         firstName: String, lastName: String,
@@ -13,30 +19,25 @@ class PersonRepository {
         parents: MutableList<Int> = mutableListOf(),
         heir: Boolean = false
     ): Person{
-        if (parents.size > 2) {
-            throw IllegalArgumentException("A person can have maximum 2 biological parents")
-        }
-
-        val person = Person(
-            id=nextID,
-            firstName=firstName,
-            lastName=lastName,
-            gender=gender,
-            parentIds=parents,
-            isHeir=heir
+        val person = dataHelper.insertPerson(
+            firstName,
+            lastName,
+            gender,
+            parents,
+            heir
         )
 
         people.add(person)
-        nextID++
         Log.d("Debug", "Added person: $person")
         people.forEach{
-            Log.d("Debug", it.getFullName())
+            Log.d("Debug", "${person.id}. $person")
         }
 
         return person
     }
 
     fun addParentToPerson(personId: Int, parentId: Int){
+        //TODO PERSISTENCE
         getPersonById(personId)?.let {
             if (it.canAddParent(parentId))
                 it.parentIds.add(parentId)
@@ -82,10 +83,12 @@ class PersonRepository {
     }
 
     fun getPeople(): List<Person> {
+        //TODO changing this to persistent
         return people
     }
 
     fun getIds(): List<Int>{
+        //TODO changing this to persistent
         return people.map { it.id }
     }
 }

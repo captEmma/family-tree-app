@@ -16,7 +16,7 @@ object DbConstants {
         private val DATABASE_CREATE = """create table if not exists $DATABASE_TABLE(
             ${Columns.ID.name} integer primary key autoincrement,
             ${Columns.F_NAME.name} text not null,
-            ${Columns.L_NAME.name} text not null
+            ${Columns.L_NAME.name} text not null,
             ${Columns.GENDER.name} text not null,
             ${Columns.PARENT1.name} integer,
             ${Columns.PARENT2.name} integer,

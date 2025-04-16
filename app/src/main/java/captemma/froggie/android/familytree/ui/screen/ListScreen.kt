@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -22,6 +23,7 @@ import captemma.froggie.android.familytree.R
 import captemma.froggie.android.familytree.model.Gender
 import captemma.froggie.android.familytree.model.PersonRepository
 import captemma.froggie.android.familytree.navigation.Screen
+import captemma.froggie.android.familytree.sqlite.PersistentDataHelper
 import captemma.froggie.android.familytree.ui.view.PersonCard
 
 @Composable
@@ -68,7 +70,9 @@ fun ListScreen(navController: NavController, personRepository: PersonRepository)
 @Composable
 @Preview
 fun PreviewListScreen() {
-    val fakeRepository = PersonRepository()
+    val context = LocalContext.current
+    val fakePersistentDataHelper = remember { PersistentDataHelper(context) }
+    val fakeRepository = PersonRepository(fakePersistentDataHelper)
     val fakeController = rememberNavController()
 
     if (fakeRepository.getPeople().isEmpty()) {

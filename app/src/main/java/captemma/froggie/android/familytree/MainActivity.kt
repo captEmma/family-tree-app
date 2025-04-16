@@ -15,14 +15,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import captemma.froggie.android.familytree.model.Gender
 import captemma.froggie.android.familytree.model.PersonRepository
 import captemma.froggie.android.familytree.navigation.NavGraph
+import captemma.froggie.android.familytree.sqlite.PersistentDataHelper
 import captemma.froggie.android.familytree.ui.screen.ListScreen
 import captemma.froggie.android.familytree.ui.theme.FamilyTreeTheme
 
 class MainActivity : ComponentActivity() {
 
-    private val personRepository = PersonRepository()
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        val persistentDataHelper = PersistentDataHelper(applicationContext)
+        val personRepository = PersonRepository(persistentDataHelper)
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -69,6 +71,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+
 }
 
 //@Preview(showBackground = true)
