@@ -50,33 +50,20 @@ class PersistentDataHelper(context: Context) {
 //        }
 //    }
 
-    fun insertPerson(
-        firstName: String,
-        lastName: String,
-        gender: Gender,
-        parents: List<Int>,
-        heir: Boolean
-    ): Person {
+    fun insertPerson(person: Person
+    ): Int {
         val values = ContentValues().apply {
-            put(DbConstants.People.Columns.F_NAME.name, firstName)
-            put(DbConstants.People.Columns.L_NAME.name, lastName)
-            put(DbConstants.People.Columns.GENDER.name, gender.name)
-            put(DbConstants.People.Columns.PARENT1.name, parents.getOrNull(0))
-            put(DbConstants.People.Columns.PARENT2.name, parents.getOrNull(1))
-            put(DbConstants.People.Columns.HEIR.name, if (heir) 1 else 0)
+            put(DbConstants.People.Columns.F_NAME.name, person.firstName)
+            put(DbConstants.People.Columns.L_NAME.name, person.lastName)
+            put(DbConstants.People.Columns.GENDER.name, person.gender.name)
+            put(DbConstants.People.Columns.PARENT1.name, person.parentIds.getOrNull(0))
+            put(DbConstants.People.Columns.PARENT2.name, person.parentIds.getOrNull(1))
+            put(DbConstants.People.Columns.HEIR.name, if (person.isHeir) 1 else 0)
         }
 
-        val newId = database?.insert(DbConstants.People.DATABASE_TABLE, null, values)?.toInt()
-            ?: throw Exception("Failed to insert person into DB")
+        val newId = database?.insert(DbConstants.People.DATABASE_TABLE, null, values)!!.toInt()
 
-        return Person(
-            id = newId,
-            firstName = firstName,
-            lastName = lastName,
-            gender = gender,
-            parentIds = parents.toMutableList(),
-            isHeir = heir
-        )
+        return newId
     }
 
     fun loadPeople(): List<Person> {

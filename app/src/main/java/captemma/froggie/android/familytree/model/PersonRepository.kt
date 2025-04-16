@@ -19,18 +19,22 @@ class PersonRepository(private val dataHelper: PersistentDataHelper) {
         parents: MutableList<Int> = mutableListOf(),
         heir: Boolean = false
     ): Person{
-        val person = dataHelper.insertPerson(
+        val person = Person(
+            0,
             firstName,
             lastName,
             gender,
             parents,
             heir
         )
+        val newId = dataHelper.insertPerson(person)
+        person.id = newId
 
         people.add(person)
+
         Log.d("Debug", "Added person: $person")
-        people.forEach{
-            Log.d("Debug", "${person.id}. $person")
+        people.forEach{current ->
+            Log.d("Debug", "${current.id}. $current")
         }
 
         return person

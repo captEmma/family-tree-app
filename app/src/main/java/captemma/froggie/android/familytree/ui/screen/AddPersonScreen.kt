@@ -236,7 +236,7 @@ fun AddPersonScreen(
                     border = BorderStroke(1.dp, Color.Black),
                     enabled = firstName.isNotEmpty() && lastName.isNotEmpty(),
                     onClick = {
-                        personRepository.addPerson(firstName, lastName, gender, mutableListOf(), heir)
+                        personRepository.addPerson(firstName, lastName, gender, parentIds, heir)
                         navController.popBackStack()
                     },
                     content = { Text("Add") }
