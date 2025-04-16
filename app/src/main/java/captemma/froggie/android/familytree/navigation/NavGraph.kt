@@ -18,10 +18,10 @@ fun NavGraph(
         startDestination = Screen.List.route
     ){
         composable(Screen.List.route){
-            ListScreen(navController)
+            ListScreen(navController, personRepository)
         }
         composable(Screen.AddPerson.route) {
-            AddPersonScreen(personRepository, navController)
+            AddPersonScreen(navController, personRepository)
         }
     }
 }

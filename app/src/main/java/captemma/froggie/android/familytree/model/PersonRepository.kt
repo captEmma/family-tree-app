@@ -84,4 +84,8 @@ class PersonRepository {
     fun getPeople(): List<Person> {
         return people
     }
+
+    fun getIds(): List<Int>{
+        return people.map { it.id }
+    }
 }

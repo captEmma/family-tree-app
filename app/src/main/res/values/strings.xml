@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">FamilyTree</string>
     <string name="heir">Heir</string>
+    <string name="add_new_person">Add new person</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="gender_info">Gender: %1$s</string>
 </resources>

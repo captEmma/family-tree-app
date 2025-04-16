@@ -9,58 +9,21 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import captemma.froggie.android.familytree.model.Gender
 import captemma.froggie.android.familytree.model.PersonRepository
 import captemma.froggie.android.familytree.navigation.Screen
 import captemma.froggie.android.familytree.ui.view.PersonCard
 
 @Composable
-fun ListScreen(navController: NavController? = null) {
+fun ListScreen(navController: NavController, personRepository: PersonRepository) {
     val context = LocalContext.current
-    val repository = remember { PersonRepository() }
 
-    LaunchedEffect(Unit) {
-        if(repository.getPeople().isEmpty()){
-            val dawn = repository.addPerson("Dawn", "Rutherford", Gender.FEMALE, heir = true)
-            val frost = repository.addPerson("Frost", "Thomas", Gender.MALE)
-            val river = repository.addPerson(
-                "River",
-                "Rutherford",
-                Gender.MALE,
-                mutableListOf(dawn.id, frost.id),
-                true
-            )
-            val kyle = repository.addPerson("Kyle", "Kyleson", Gender.MALE)
-            val katie = repository.addPerson(
-                "Katie",
-                "Rutherford",
-                Gender.FEMALE,
-                mutableListOf(dawn.id)
-            )
-            val blake = repository.addPerson(
-                "Blake",
-                "Rutherford",
-                Gender.FEMALE,
-                mutableListOf(dawn.id, kyle.id)
-            )
-            val kai = repository.addPerson("Kai", "Rutherford", Gender.MALE)
-            val coral = repository.addPerson("Coral", "Rutherford", Gender.FEMALE, heir = true)
-
-            repository.addParentToPerson(katie.id, dawn.id)
-            repository.addParentToPerson(katie.id, kyle.id)
-            repository.addParentToPerson(katie.id, frost.id)
-
-            repository.addChildrenToPerson(river.id, listOf(kai.id, coral.id))
-        }
-    }
-
-    val people = repository.getPeople()
+    val people = personRepository.getPeople()
 
     Scaffold(
         modifier = Modifier.safeDrawingPadding(),
@@ -69,7 +32,7 @@ fun ListScreen(navController: NavController? = null) {
             LargeFloatingActionButton(
                 shape = CircleShape,
                 onClick = {
-                    navController?.navigate(Screen.AddPerson.route)
+                    navController.navigate(Screen.AddPerson.route)
                 }
             ) { }
         },
@@ -92,5 +55,41 @@ fun ListScreen(navController: NavController? = null) {
 @Composable
 @Preview
 fun PreviewListScreen(){
-    ListScreen()
+    val fakeRepository = PersonRepository()
+    val fakeController = rememberNavController()
+
+    if(fakeRepository.getPeople().isEmpty()){
+        val dawn = fakeRepository.addPerson("Dawn", "Rutherford", Gender.FEMALE, heir = true)
+        val frost = fakeRepository.addPerson("Frost", "Thomas", Gender.MALE)
+        val river = fakeRepository.addPerson(
+            "River",
+            "Rutherford",
+            Gender.MALE,
+            mutableListOf(dawn.id, frost.id),
+            true
+        )
+        val kyle = fakeRepository.addPerson("Kyle", "Kyleson", Gender.MALE)
+        val katie = fakeRepository.addPerson(
+            "Katie",
+            "Rutherford",
+            Gender.FEMALE,
+            mutableListOf(dawn.id)
+        )
+        val blake = fakeRepository.addPerson(
+            "Blake",
+            "Rutherford",
+            Gender.FEMALE,
+            mutableListOf(dawn.id, kyle.id)
+        )
+        val kai = fakeRepository.addPerson("Kai", "Rutherford", Gender.MALE)
+        val coral = fakeRepository.addPerson("Coral", "Rutherford", Gender.FEMALE, heir = true)
+
+        fakeRepository.addParentToPerson(katie.id, dawn.id)
+        fakeRepository.addParentToPerson(katie.id, kyle.id)
+        fakeRepository.addParentToPerson(katie.id, frost.id)
+
+        fakeRepository.addChildrenToPerson(river.id, listOf(kai.id, coral.id))
+    }
+
+    ListScreen(fakeController, fakeRepository)
 }

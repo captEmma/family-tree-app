@@ -15,7 +15,7 @@ data class Person(
     var isHeir: Boolean = false
 ){
     fun canAddParent(parentId : Int):Boolean{
-        return parentIds.size<2 && !parentIds.contains(parentId)
+        return parentIds.size<2 && !parentIds.contains(parentId) && parentId!=id
     }
 
     fun getFullName(): String{
