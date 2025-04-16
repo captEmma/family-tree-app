@@ -1,16 +1,14 @@
 package captemma.froggie.android.familytree.ui.screen
 
-import android.icu.text.CaseMap.Title
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeGesturesPadding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
@@ -18,21 +16,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Label
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -40,18 +36,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import captemma.froggie.android.familytree.R
 import captemma.froggie.android.familytree.model.Gender
+import captemma.froggie.android.familytree.model.Person
 import captemma.froggie.android.familytree.model.PersonRepository
+
+
 
 @Composable
 fun AddPersonScreen(
@@ -64,7 +61,7 @@ fun AddPersonScreen(
     var heir by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier.safeGesturesPadding(),
+        modifier = Modifier.safeContentPadding(),
         topBar = {
             Row() {
                 IconButton(onClick = { navController.popBackStack() }
@@ -86,11 +83,9 @@ fun AddPersonScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxWidth()
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
+                    .wrapContentHeight()
             ) {
-                Row(modifier = Modifier.padding(innerPadding)) {
+                Row() {
                     OutlinedTextField(
                         shape = RoundedCornerShape(12.dp),
                         label = { Text(stringResource(R.string.first_name)) },
@@ -120,17 +115,18 @@ fun AddPersonScreen(
                 }
                 Row(
                     modifier = Modifier
-                        .padding(start = 8.dp, end = 8.dp)
+                        .padding(8.dp)
                         .fillMaxWidth()
                         .wrapContentHeight(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Box() {
+                    Box(
+                        modifier = Modifier.wrapContentHeight()
+                    ) {
                         var genderListExanded by remember { mutableStateOf(false) }
 
                         OutlinedButton(
-                            modifier = Modifier.padding(innerPadding),
                             onClick = { genderListExanded = true },
                             shape = RoundedCornerShape(24.dp)
                         ) {
@@ -143,7 +139,6 @@ fun AddPersonScreen(
                         }
 
                         DropdownMenu(
-                            modifier = Modifier.padding(innerPadding),
                             expanded = genderListExanded,
                             onDismissRequest = { genderListExanded = false }
                         ) {
@@ -164,10 +159,7 @@ fun AddPersonScreen(
                         verticalAlignment = Alignment.CenterVertically
                     )
                     {
-                        Text(
-                            modifier = Modifier.padding(innerPadding),
-                            text = "Heir"
-                        )
+                        Text("Heir")
 
                         Checkbox(
                             checked = heir,
@@ -176,34 +168,53 @@ fun AddPersonScreen(
                     }
                 }
 
-                Box(
-                    modifier = Modifier.padding(innerPadding).fillMaxWidth(),
-                    contentAlignment = Alignment.Center
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    var parentListExpanded by remember { mutableStateOf(false) }
-                    val canAddParent: Boolean = parentIds.size<2 && personRepository.getIds().any {it !in parentIds}
-                    OutlinedButton(
-                        modifier = Modifier.padding(innerPadding).wrapContentSize(),
-                        shape = CircleShape,
-                        onClick = {parentListExpanded = true},
-                        enabled = canAddParent
-                    ) {
-                        Text("Add a parent")
+                    Row() {
+                        var parentListExpanded by remember { mutableStateOf(false) }
+                        val canAddParent by remember {
+                            derivedStateOf {
+                                parentIds.size < 2 && personRepository.getIds()
+                                    .any { it !in parentIds }
+                            }
+                        }
+                        OutlinedButton(
+                            modifier = Modifier.wrapContentSize(),
+                            shape = CircleShape,
+                            onClick = { parentListExpanded = true },
+                            enabled = canAddParent
+                        ) {
+                            Text("Add a parent")
+                        }
+                        DropdownMenu(
+                            expanded = parentListExpanded,
+                            onDismissRequest = { parentListExpanded = false }
+                        ) {
+                            personRepository.getPeople().forEach { person ->
+                                if (person.id !in parentIds) {
+                                    DropdownMenuItem(
+                                        text = { Text(person.getFullName()) },
+                                        onClick = {
+                                            parentIds.add(person.id)
+                                            parentListExpanded = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
                     }
-                    DropdownMenu(
-                        modifier = Modifier.padding(innerPadding),
-                        expanded = parentListExpanded,
-                        onDismissRequest = {parentListExpanded = false}
-                    ) {
-                        personRepository.getPeople().forEach{ person ->
-                            if(person.id !in parentIds) {
-                                DropdownMenuItem(
-                                    text = { Text(person.getFullName()) },
-                                    onClick = {
-                                        parentIds.add(person.id)
-                                        parentListExpanded = false
-                                    }
-                                )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ){
+                        parentIds.forEach{ parentId ->
+                            val parent = personRepository.getPersonById(parentId)
+                            if(parent != null){
+                                ParentViewCard(parent) {
+                                    parentIds.remove(parentId)
+                                }
                             }
                         }
                     }
@@ -227,6 +238,15 @@ fun AddPersonScreen(
             }
         }
     )
+}
+
+@Composable
+fun ParentViewCard(parent: Person, onRemove: () -> Unit){
+        TextButton(
+            border = BorderStroke(1.dp, Color.Black),
+            onClick = onRemove,
+            content = { Text(parent.getFullName()) }
+        )
 }
 
 @Composable
