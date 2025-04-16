@@ -205,6 +205,12 @@ fun AddPersonScreen(
                             }
                         }
                     }
+                    if(parentIds.isNotEmpty())
+                    {
+                        Row(modifier = Modifier.padding(8.dp)) {
+                            Text("Parents:")
+                        }
+                    }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
@@ -244,6 +250,7 @@ fun AddPersonScreen(
 fun ParentViewCard(parent: Person, onRemove: () -> Unit){
         TextButton(
             border = BorderStroke(1.dp, Color.Black),
+            shape = RoundedCornerShape(12.dp),
             onClick = onRemove,
             content = { Text(parent.getFullName()) }
         )

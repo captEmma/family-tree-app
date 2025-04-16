@@ -28,7 +28,7 @@ class PersonRepository {
 
         people.add(person)
         nextID++
-        Log.d("Debug", "Added person: ${person.getFullName()} with ID: ${person.id}")
+        Log.d("Debug", "Added person: $person")
         people.forEach{
             Log.d("Debug", it.getFullName())
         }

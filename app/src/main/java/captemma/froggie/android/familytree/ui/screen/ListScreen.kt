@@ -1,19 +1,24 @@
 package captemma.froggie.android.familytree.ui.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import captemma.froggie.android.familytree.R
 import captemma.froggie.android.familytree.model.Gender
 import captemma.froggie.android.familytree.model.PersonRepository
 import captemma.froggie.android.familytree.navigation.Screen
@@ -34,14 +39,22 @@ fun ListScreen(navController: NavController, personRepository: PersonRepository)
                 onClick = {
                     navController.navigate(Screen.AddPerson.route)
                 }
-            ) { }
+            ) {
+                Image(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.add_new_person)
+                )
+            }
         },
 
         content = { innerPadding ->
-            Box(Modifier.fillMaxSize().padding(innerPadding)){
-                if(people.isNotEmpty()){
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)) {
+                if (people.isNotEmpty()) {
                     LazyColumn(Modifier.fillMaxSize()) {
-                        items(people.size){
+                        items(people.size) {
                             PersonCard(people[it])
                         }
                     }
@@ -54,11 +67,11 @@ fun ListScreen(navController: NavController, personRepository: PersonRepository)
 
 @Composable
 @Preview
-fun PreviewListScreen(){
+fun PreviewListScreen() {
     val fakeRepository = PersonRepository()
     val fakeController = rememberNavController()
 
-    if(fakeRepository.getPeople().isEmpty()){
+    if (fakeRepository.getPeople().isEmpty()) {
         val dawn = fakeRepository.addPerson("Dawn", "Rutherford", Gender.FEMALE, heir = true)
         val frost = fakeRepository.addPerson("Frost", "Thomas", Gender.MALE)
         val river = fakeRepository.addPerson(

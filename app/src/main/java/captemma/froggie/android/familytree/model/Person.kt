@@ -7,7 +7,7 @@ enum class Gender{
 }
 
 data class Person(
-    val id: Int,
+    var id: Int,
     var firstName: String,
     var lastName: String,
     var gender: Gender= Gender.OTHER,
